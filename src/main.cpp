@@ -12,13 +12,16 @@ using namespace std::experimental;
 
 static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
 {   
+    // Read data in binary format and move to the end of file after reading
     std::ifstream is{path, std::ios::binary | std::ios::ate};
     if( !is )
         return std::nullopt;
     
+    // Get size of stream
     auto size = is.tellg();
     std::vector<std::byte> contents(size);    
     
+    // Move to stream begining and read data in contents
     is.seekg(0);
     is.read((char*)contents.data(), size);
 
@@ -52,18 +55,26 @@ int main(int argc, const char **argv)
             osm_data = std::move(*data);
     }
     
-    // TODO 1: Declare floats `start_x`, `start_y`, `end_x`, and `end_y` and get
-    // user input for these values using std::cin. Pass the user input to the
-    // RoutePlanner object below in place of 10, 10, 90, 90.
+    // Get start and end coordinates from user
+    float start_x, start_y, end_x, end_y;
+
+    std::cout<<"\nEnter x coordinate for start : ";
+    std::cin>>start_x;
+    std::cout<<"Enter y coordinate for start : ";
+    std::cin>>start_y;
+    std::cout<<"Enter x coordinate for end : ";
+    std::cin>>end_x;
+    std::cout<<"Enter y coordinate for end : ";
+    std::cin>>end_y;
 
     // Build Model.
     RouteModel model{osm_data};
 
     // Create RoutePlanner object and perform A* search.
-    RoutePlanner route_planner{model, 10, 10, 90, 90};
+    RoutePlanner route_planner{model, start_x, start_y, end_x, end_y};
     route_planner.AStarSearch();
 
-    std::cout << "Distance: " << route_planner.GetDistance() << " meters. \n";
+    std::cout << "\nDistance: " << route_planner.GetDistance() << " meters. \n";
 
     // Render results of search.
     Render render{model};
