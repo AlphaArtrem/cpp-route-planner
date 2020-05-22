@@ -67,6 +67,11 @@ int main(int argc, const char **argv)
     std::cout<<"Enter y coordinate for end : ";
     std::cin>>end_y;
 
+    if((start_x < 0 || start_x > 100) || (start_y < 0 || start_y > 100) || (end_x < 0 || end_x > 100) || (end_y < 0 || end_y > 100)){
+        std::cout<<"\nError : Coordinates should be between 0 and 100\n";
+        return 1;
+    }
+
     // Build Model.
     RouteModel model{osm_data};
 

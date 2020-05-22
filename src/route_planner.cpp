@@ -34,16 +34,14 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 }
 
 
-// Helper function to compare nodes
-bool CompareNodes(RouteModel::Node *a, RouteModel::Node *b){
+// Get the next optimal node to explore
+RouteModel::Node *RoutePlanner::NextNode() {
+    std::sort(open_list.begin(), open_list.end(), [](const RouteModel::Node *a, const RouteModel::Node *b){
     float aScore = a -> h_value + a -> g_value;
     float bScore = b -> h_value + b -> g_value;
     return aScore > bScore;
-}
-
-// Get the next optimal node to explore
-RouteModel::Node *RoutePlanner::NextNode() {
-    std::sort(open_list.begin(), open_list.end(), CompareNodes);
+    });
+    
     RouteModel::Node *nextNode = open_list.back();
     open_list.pop_back();
     return nextNode;
@@ -65,6 +63,7 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
     }
     
     path_found.push_back(*current_node);
+    std::reverse(path_found.begin(), path_found.end());
     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
     return path_found;
 
